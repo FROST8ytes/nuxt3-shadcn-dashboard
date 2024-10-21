@@ -89,8 +89,13 @@ const generateChartData = (
   return result;
 };
 
-export default defineEventHandler((event) => {
+const sleep = (ms: number): Promise<void> => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export default defineEventHandler(async (event) => {
   const timeScale = getRouterParam(event, "scale")! as TimeScale;
+  await sleep(1000);
 
   return generateChartData(timeScale, 2000);
 });

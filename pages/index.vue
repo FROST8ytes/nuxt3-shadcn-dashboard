@@ -43,7 +43,7 @@ onBeforeMount(async () => {
         <p>Hi, welcome back Ammar!</p>
         <h1>Dashboard</h1>
       </div>
-      <div class="bg-neutral-200 h-12 w-[120px]"></div>
+      <Skeleton class="rounded-xl h-12 w-[120px]" />
     </header>
     <main class="grid gap-4">
       <Tabs :default-value="timeScale" class="w-full">
@@ -97,16 +97,17 @@ onBeforeMount(async () => {
             "
             :custom-tooltip="CustomChartTooltip"
           />
+          <Skeleton v-else class="w-full h-[400px] rounded-xl" />
         </TabsContent>
       </Tabs>
     </main>
     <footer>
       <div class="flex items-center gap-4">
-        <div
+        <Skeleton
           v-for="(item, index) in 3"
           :key="index"
-          class="w-full h-[260px] bg-neutral-200"
-        ></div>
+          class="w-full h-[260px] rounded-xl"
+        />
       </div>
     </footer>
   </div>
