@@ -67,10 +67,31 @@ onBeforeMount(async () => {
             :data="chartData"
             index="time"
             :categories="['transaction', 'balance']"
+            :x-formatter="
+              (tick, i) => {
+                const time = chartData[tick]['time'];
+                const date = new Date(time);
+                const options = {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  hour12: true,
+                };
+                return !isNaN(date.getTime())
+                  ? `${date.toLocaleString('en-US', options)}`
+                  : time;
+              }
+            "
             :y-formatter="
               (tick, i) => {
                 return typeof tick === 'number'
-                  ? `$ ${new Intl.NumberFormat('us').format(tick).toString()}`
+                  ? `${new Intl.NumberFormat('en-MY', {
+                      style: 'currency',
+                      currency: 'MYR',
+                    })
+                      .format(tick)
+                      .toString()}`
                   : '';
               }
             "

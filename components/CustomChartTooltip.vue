@@ -35,7 +35,11 @@ const options = {
           />
           <span>{{ item.name }}</span>
         </div>
-        <span class="font-semibold ml-4">{{ item.value.toFixed(2) }}</span>
+        <span class="font-semibold ml-4">{{
+          new Intl.NumberFormat("en-MY", { style: "currency", currency: "MYR" })
+            .format(item.value)
+            .toString()
+        }}</span>
       </div>
     </CardContent>
   </Card>
