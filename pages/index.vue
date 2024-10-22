@@ -119,7 +119,7 @@ onBeforeMount(async () => {
       </Tabs>
     </main>
     <footer>
-      <div class="grid grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         <OverviewCard v-for="(item, index) in cards" :card="item" :key="index" />
       </div>
     </footer>

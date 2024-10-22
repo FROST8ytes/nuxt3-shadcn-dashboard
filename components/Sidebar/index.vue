@@ -1,5 +1,5 @@
 <script setup>
-const open = ref(true);
+const open = ref(false);
 </script>
 
 <template>
@@ -12,9 +12,12 @@ const open = ref(true);
         <Icon @click="open = false" name="material-symbols:close" class="absolute z-50 cursor-pointer right-4 top-4"
           size="30" />
         <SidebarMenu />
+        <div class="fixed bottom-0 p-5 w-full">
+          <SidebarDarkModeSwitcher />
+        </div>
       </div>
     </div>
-    <div class="hidden lg:flex w-[250px] h-screen flex-col justify-between border-r">
+    <div class="hidden lg:flex grow w-[250px] min-h-screen flex-col justify-between border-r">
       <SidebarMenu />
       <SidebarDarkModeSwitcher />
     </div>
