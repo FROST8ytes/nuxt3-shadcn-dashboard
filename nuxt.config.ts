@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "@nuxt/icon",
     "@pinia/nuxt",
+    "@nuxtjs/color-mode",
   ],
   shadcn: {
     /**
@@ -24,5 +25,9 @@ export default defineNuxtConfig({
      * @default "./components/ui"
      */
     componentDir: "./components/ui",
+  },
+  colorMode: {
+    fallback: 'light',
+    classSuffix: '',
   },
 });

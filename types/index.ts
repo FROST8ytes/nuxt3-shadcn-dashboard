@@ -6,6 +6,15 @@ declare global {
     transaction: number;
     balance: number;
   };
+
+  type OverviewCardProp = {
+    title: string;
+    progression: number;
+    amount: number;
+    label: string;
+    description: string;
+    icon: string;
+  };
 }
 
-export { type TimeScale, type TransactionBalanceChartData };
+export { type TimeScale, type TransactionBalanceChartData, type OverviewCardProp };

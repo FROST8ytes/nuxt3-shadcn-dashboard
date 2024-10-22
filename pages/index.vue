@@ -1,14 +1,49 @@
 <script setup lang="ts">
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { type TimeScale, type TransactionBalanceChartData } from "~/types";
-import CustomChartTooltip from "@/components/CustomChartTooltip.vue";
+import OverviewChartTooltip from "@/components/Overview/ChartTooltip.vue";
 import { LineChart } from "@/components/ui/chart-line";
 
 const timeScales: TimeScale[] = ["day", "week", "month", "year"];
 
-const loading = ref(true);
+const chartLoading = ref(true);
 const chartData: Ref<TransactionBalanceChartData[]> = ref([]);
 const timeScale: Ref<TimeScale> = ref("day" as TimeScale);
+
+const cards = [
+  {
+    title: "Sales",
+    progression: 12,
+    amount: 1244.43,
+    label: "View sales",
+    description: "Sales of March 2024",
+    icon: "solar:ticket-sale-outline",
+  },
+  {
+    title: "Refunds",
+    progression: 8,
+    amount: 84.44,
+    label: "View refunds",
+    description: "Refunds since beginning of year",
+    icon: "heroicons-outline:receipt-refund",
+  },
+  {
+    title: "Payouts",
+    progression: 14,
+    amount: 899.99,
+    label: "View payouts",
+    description: "Payouts of this week",
+    icon: "tabler:zoom-money",
+  },
+  {
+    title: "Booty Calls",
+    progression: 69,
+    amount: 666420.69,
+    label: "View Booty Calls",
+    description: "Booty Calls of this week",
+    icon: "icon-park-twotone:peach",
+  },
+];
 
 const toTitleCase = (str: string) => {
   return str.replace(
@@ -19,20 +54,20 @@ const toTitleCase = (str: string) => {
 };
 
 const changeTabs = async (e) => {
-  loading.value = true;
+  chartLoading.value = true;
   timeScale.value = e.target.innerText.toLowerCase();
   chartData.value = await $fetch<TransactionBalanceChartData[]>(
     `/api/overview/${timeScale.value}`
   );
   console.log(chartData.value);
-  loading.value = false;
+  chartLoading.value = false;
 };
 
 onBeforeMount(async () => {
   chartData.value = await $fetch<TransactionBalanceChartData[]>(
     `/api/overview/${timeScale.value}`
   );
-  loading.value = false;
+  chartLoading.value = false;
 });
 </script>
 
@@ -48,66 +83,44 @@ onBeforeMount(async () => {
     <main class="grid gap-4">
       <Tabs :default-value="timeScale" class="w-full">
         <TabsList class="max-w-[400px]">
-          <TabsTrigger
-            v-for="timeScale in timeScales"
-            :key="timeScale"
-            :value="timeScale"
-            @click="changeTabs"
-          >
+          <TabsTrigger v-for="timeScale in timeScales" :key="timeScale" :value="timeScale" @click="changeTabs">
             {{ toTitleCase(timeScale) }}
           </TabsTrigger>
         </TabsList>
-        <TabsContent
-          v-for="timeScale in timeScales"
-          :key="timeScale"
-          :value="timeScale"
-        >
-          <LineChart
-            v-if="!loading"
-            :data="chartData"
-            index="time"
-            :categories="['transaction', 'balance']"
-            :x-formatter="
-              (tick, i) => {
-                const time = chartData[tick]['time'];
-                const date = new Date(time);
-                const options = {
-                  month: 'short',
-                  day: 'numeric',
-                  hour: 'numeric',
-                  minute: 'numeric',
-                  hour12: true,
-                };
-                return !isNaN(date.getTime())
-                  ? `${date.toLocaleString('en-US', options)}`
-                  : time;
-              }
-            "
-            :y-formatter="
-              (tick, i) => {
+        <TabsContent v-for="timeScale in timeScales" :key="timeScale" :value="timeScale">
+          <LineChart v-if="!chartLoading" :data="chartData" index="time" :categories="['transaction', 'balance']"
+            :x-formatter="(tick, i) => {
+              const time = chartData[tick]['time'];
+              const date = new Date(time);
+              const options = {
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+              };
+              return !isNaN(date.getTime())
+                ? `${date.toLocaleString('en-US', options)}`
+                : time;
+            }
+              " :y-formatter="(tick, i) => {
                 return typeof tick === 'number'
                   ? `${new Intl.NumberFormat('en-MY', {
-                      style: 'currency',
-                      currency: 'MYR',
-                    })
-                      .format(tick)
-                      .toString()}`
+                    style: 'currency',
+                    currency: 'MYR',
+                  })
+                    .format(tick)
+                    .toString()}`
                   : '';
               }
-            "
-            :custom-tooltip="CustomChartTooltip"
-          />
+                " :custom-tooltip="OverviewChartTooltip" />
           <Skeleton v-else class="w-full h-[400px] rounded-xl" />
         </TabsContent>
       </Tabs>
     </main>
     <footer>
-      <div class="flex items-center gap-4">
-        <Skeleton
-          v-for="(item, index) in 3"
-          :key="index"
-          class="w-full h-[260px] rounded-xl"
-        />
+      <div class="grid grid-cols-4 gap-4">
+        <OverviewCard v-for="(item, index) in cards" :card="item" :key="index" />
       </div>
     </footer>
   </div>
